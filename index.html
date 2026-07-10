@@ -78,7 +78,7 @@
         }
 
         .message {
-            font-size: 2rem;
+            font-size: 1.75rem; /* Reduced slightly to prevent wide characters wrapping awkwardly */
             margin-bottom: 30px;
             padding: 0 10px;
         }
@@ -236,7 +236,7 @@
 </head>
 <body>
 
-    <!-- Hidden iframe: Bypasses CORS entirely by handling the form submission natively -->
+    <!-- Hidden iframe: Bypasses CORS entirely -->
     <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
 
     <!-- RSVP Modal -->
@@ -244,7 +244,6 @@
         <div class="modal-box">
             <h2 class="great-vibes" style="font-size: 2.5rem; color: #B43474;">Confirme sua Presença</h2>
             
-            <!-- Standard form pointing directly to Google, targeting the hidden iframe -->
             <form id="rsvpForm" 
                   action="https://script.google.com/macros/s/AKfycby92TDGNBYjhiZQlKiSLRmaQJXpc3z_i_uef67VY2i6f0K_WW-7UeMeXbiAWpii8aeO/exec" 
                   method="POST" 
@@ -269,12 +268,14 @@
         </div>
 
         <div data-aos="zoom-in" data-aos-duration="1500" data-aos-delay="300">
-            <p class="great-vibes message">Venha comemorar comigo esta data<br>tão especial !</p>
+            <!-- Fixed line breaks for natural wrapping -->
+            <p class="great-vibes message">Venha comemorar comigo<br>esta data tão especial !</p>
         </div>
 
         <div data-aos="fade-up" data-aos-duration="1200" data-aos-delay="600">
             <p class="yuyu-regular details">Sábado, 15 de agosto de 2026, às 20 hs</p>
-            <p class="yuyu-regular details">Setor de chácaras Eldorado-Chácara Recanto Paraíso-Qd-4 R-1 N-42</p>
+            <!-- Capitalized Address details -->
+            <p class="yuyu-regular details">Setor de Chácaras Eldorado - Chácara Recanto Paraíso - Qd. 4, R-1, N-42</p>
         </div>
 
         <!-- Interactive Buttons -->
@@ -288,7 +289,7 @@
             </button>
 
             <!-- Location Button -->
-            <a href="https://www.google.com/maps/search/?api=1&query=Setor+de+chácaras+Eldorado-Chácara+Recanto+Paraíso-Qd-4+R-1+N-42" target="_blank" class="action-btn" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="1000">
+            <a href="https://www.google.com/maps/search/?api=1&query=Setor+de+Chácaras+Eldorado+-+Chácara+Recanto+Paraíso+-+Qd.+4,+R-1,+N-42" target="_blank" class="action-btn" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="1000">
                 <div class="btn-circle">
                     <span class="material-icons">location_on</span>
                 </div>
@@ -349,20 +350,18 @@
             }
         }
 
-        // 4. Secure Form Submission without JavaScript Fetch (Anti-CORS Bypass)
+        // 4. Secure Form Submission (Anti-CORS Bypass)
         let submitted = false;
         const form = document.getElementById('rsvpForm');
         const iframe = document.getElementById('hidden_iframe');
         const submitBtn = document.getElementById('submitBtn');
 
-        // When the user clicks submit, mark as submitted and show loading text
         form.addEventListener('submit', () => {
             submitted = true;
             submitBtn.textContent = "Enviando...";
             submitBtn.disabled = true;
         });
 
-        // This event listener fires when the hidden iframe finishes loading Google's response
         iframe.addEventListener('load', () => {
             if (submitted) {
                 alert('Presença confirmada com sucesso! Muito obrigada.');
