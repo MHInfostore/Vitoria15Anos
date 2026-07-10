@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>15 Anos - Vitória</title>
+    
+    <!-- Custom Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Yuyu&display=swap" rel="stylesheet">
+    
+    <!-- Google Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+    <!-- AOS Animation Library CSS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <style>
+        /* Base Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #f7ecee;
+            display: flex;
+            justify-content: center;
+            font-family: sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Mobile Flyer Container */
+        .flyer-container {
+            width: 100%;
+            max-width: 480px; 
+            min-height: 100vh;
+            background-color: #fdf5f7;
+            background-image: url('bg.png'); /* Needs to be in the same folder */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15% 5% 20% 5%; 
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        /* Typography */
+        .great-vibes {
+            font-family: "Great Vibes", cursive;
+            font-weight: 400;
+            color: #B43474;
+            line-height: 1.2;
+        }
+
+        .yuyu-regular {
+            font-family: "Yuyu", sans-serif;
+            font-weight: 400;
+            color: #222;
+            line-height: 1.5;
+        }
+
+        .title-name {
+            font-size: 5.5rem;
+            margin-top: 10px;
+        }
+
+        .title-age {
+            font-size: 3.5rem;
+            margin-top: -15px;
+            margin-bottom: 20px;
+        }
+
+        .message {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            padding: 0 10px;
+        }
+
+        .details {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            padding: 0 20px;
+        }
+
+        /* Buttons Section */
+        .actions-container {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 40px;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .action-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            gap: 10px;
+        }
+
+        .btn-circle {
+            background-color: #DF9B94;
+            color: white;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(223, 155, 148, 0.4);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .action-btn:hover .btn-circle {
+            transform: scale(1.1);
+            box-shadow: 0 6px 15px rgba(223, 155, 148, 0.6);
+        }
+
+        .btn-circle .material-icons {
+            font-size: 35px;
+        }
+
+        .btn-label {
+            font-size: 1.2rem;
+            color: #111;
+        }
+
+        .interaction-hint {
+            font-size: 1.8rem;
+            color: #DF9B94;
+            margin-top: 10px;
+        }
+
+        /* Fixed Petal Particle Effects */
+        .petal {
+            position: absolute;
+            background-color: #DF9B94;
+            border-radius: 15px 0 15px 0;
+            pointer-events: none;
+            z-index: 1;
+            animation: fall linear infinite;
+            animation-fill-mode: both; /* Prevents bunching at the top */
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg) scale(0.5); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.5; }
+            100% { transform: translateY(110vh) rotate(360deg) scale(1); opacity: 0; }
+        }
+
+        /* RSVP Modal Overlay */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+
+        .modal-box {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 350px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .modal-box h2 {
+            margin-bottom: 20px;
+        }
+
+        .modal-box input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-cancel {
+            background-color: #f0f0f0;
+            color: #555;
+        }
+
+        .btn-submit {
+            background-color: #B43474;
+            color: white;
+        }
+
+        .btn-submit:disabled {
+            background-color: #d17a9f;
+            cursor: not-allowed;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- RSVP Modal -->
+    <div class="modal-overlay" id="rsvpModal">
+        <div class="modal-box">
+            <h2 class="great-vibes" style="font-size: 2.5rem; color: #B43474;">Confirme sua Presença</h2>
+            <form id="rsvpForm">
+                <!-- Added "name" attributes so the Apps Script knows which column is which -->
+                <input type="text" id="guestName" name="nome" placeholder="Nome Completo" required class="yuyu-regular">
+                <input type="tel" id="guestPhone" name="telefone" placeholder="Telefone / WhatsApp" required class="yuyu-regular">
+                <div class="modal-buttons">
+                    <button type="button" class="modal-btn btn-cancel yuyu-regular" onclick="closeModal()">Cancelar</button>
+                    <button type="submit" id="submitBtn" class="modal-btn btn-submit yuyu-regular">Confirmar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Flyer Content -->
+    <div class="flyer-container" id="flyer">
+        
+        <div data-aos="fade-down" data-aos-duration="1500">
+            <h1 class="great-vibes title-name">Vitória</h1>
+            <h2 class="great-vibes title-age">15 anos</h2>
+        </div>
+
+        <div data-aos="zoom-in" data-aos-duration="1500" data-aos-delay="300">
+            <p class="great-vibes message">Venha comemorar comigo esta data<br>tão especial !</p>
+        </div>
+
+        <div data-aos="fade-up" data-aos-duration="1200" data-aos-delay="600">
+            <p class="yuyu-regular details">Sábado, 15 de agosto de 2026, às 20 hs</p>
+            <p class="yuyu-regular details">Setor de chácaras Eldorado-Chácara Recanto Paraíso-Qd-4 R-1 N-42</p>
+        </div>
+
+        <!-- Interactive Buttons -->
+        <div class="actions-container">
+            <!-- Confirm Button -->
+            <button class="action-btn" onclick="openModal()" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="800">
+                <div class="btn-circle">
+                    <span class="material-icons">check_circle_outline</span>
+                </div>
+                <span class="yuyu-regular btn-label">confirmação</span>
+            </button>
+
+            <!-- Location Button -->
+            <a href="https://www.google.com/maps/search/?api=1&query=Setor+de+chácaras+Eldorado-Chácara+Recanto+Paraíso-Qd-4+R-1+N-42" target="_blank" class="action-btn" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="1000">
+                <div class="btn-circle">
+                    <span class="material-icons">location_on</span>
+                </div>
+                <span class="yuyu-regular btn-label">localização</span>
+            </a>
+        </div>
+
+        <p class="great-vibes interaction-hint" data-aos="fade-in" data-aos-duration="2000" data-aos-delay="1200">Toque aqui para interagir!</p>
+        
+    </div>
+
+    <!-- AOS Animation Library JS -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <script>
+        // 1. Initialize Scroll Animations
+        AOS.init({ once: false });
+
+        // 2. Generate Falling Petals (Fixed bunching issue)
+        function createPetals() {
+            const flyer = document.getElementById('flyer');
+            const petalCount = 20; 
+
+            for (let i = 0; i < petalCount; i++) {
+                let petal = document.createElement('div');
+                petal.classList.add('petal');
+                
+                let size = Math.random() * 15 + 10; 
+                let leftPos = Math.random() * 100; 
+                let animDuration = Math.random() * 5 + 5; 
+                let animDelay = Math.random() * 5; 
+
+                petal.style.width = `${size}px`;
+                petal.style.height = `${size}px`;
+                petal.style.left = `${leftPos}%`;
+                petal.style.animationDuration = `${animDuration}s`;
+                petal.style.animationDelay = `${animDelay}s`;
+
+                flyer.appendChild(petal);
+            }
+        }
+        createPetals();
+
+        // 3. Modal Controls
+        const modal = document.getElementById('rsvpModal');
+        
+        function openModal() {
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            modal.style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+
+        // 4. Google Sheets Form Submission
+        const scriptURL = 'https://script.google.com/macros/s/AKfycby92TDGNBYjhiZQlKiSLRmaQJXpc3z_i_uef67VY2i6f0K_WW-7UeMeXbiAWpii8aeO/exec'; 
+        
+        const form = document.getElementById('rsvpForm');
+        const submitBtn = document.getElementById('submitBtn');
+
+        form.addEventListener('submit', e => {
+            e.preventDefault(); 
+            
+            // Change button to show it's working and prevent double-clicks
+            submitBtn.textContent = "Enviando...";
+            submitBtn.disabled = true; 
+
+            // Bundle up the form data based on the "name" attributes
+            let requestBody = new FormData(form);
+
+            // Send to Google Sheets safely via the web app URL
+            fetch(scriptURL, { method: 'POST', body: requestBody })
+                .then(response => {
+                    alert('Presença confirmada com sucesso! Muito obrigada.');
+                    closeModal();
+                    form.reset();
+                    submitBtn.textContent = "Confirmar"; 
+                    submitBtn.disabled = false;
+                })
+                .catch(error => {
+                    alert('Houve um erro ao enviar. Por favor, tente novamente ou confirme direto no WhatsApp.');
+                    console.error('Error!', error.message);
+                    submitBtn.textContent = "Confirmar";
+                    submitBtn.disabled = false;
+                });
+        });
+    </script>
+</body>
+</html>
