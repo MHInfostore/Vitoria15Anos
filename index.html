@@ -152,7 +152,7 @@
             pointer-events: none;
             z-index: 1;
             animation: fall linear infinite;
-            animation-fill-mode: both; /* Prevents bunching at the top */
+            animation-fill-mode: both;
         }
 
         @keyframes fall {
@@ -241,7 +241,7 @@
         <div class="modal-box">
             <h2 class="great-vibes" style="font-size: 2.5rem; color: #B43474;">Confirme sua Presença</h2>
             <form id="rsvpForm">
-                <!-- Added "name" attributes so the Apps Script knows which column is which -->
+                <!-- Names match the e.parameter variables in Apps Script -->
                 <input type="text" id="guestName" name="nome" placeholder="Nome Completo" required class="yuyu-regular">
                 <input type="tel" id="guestPhone" name="telefone" placeholder="Telefone / WhatsApp" required class="yuyu-regular">
                 <div class="modal-buttons">
@@ -299,7 +299,7 @@
         // 1. Initialize Scroll Animations
         AOS.init({ once: false });
 
-        // 2. Generate Falling Petals (Fixed bunching issue)
+        // 2. Generate Falling Petals
         function createPetals() {
             const flyer = document.getElementById('flyer');
             const petalCount = 20; 
@@ -350,28 +350,31 @@
         form.addEventListener('submit', e => {
             e.preventDefault(); 
             
-            // Change button to show it's working and prevent double-clicks
             submitBtn.textContent = "Enviando...";
             submitBtn.disabled = true; 
 
-            // Bundle up the form data based on the "name" attributes
-            let requestBody = new FormData(form);
+            // Wraps FormData in URLSearchParams to guarantee Apps Script parses it correctly
+            const data = new URLSearchParams(new FormData(form));
 
-            // Send to Google Sheets safely via the web app URL
-            fetch(scriptURL, { method: 'POST', body: requestBody })
-                .then(response => {
-                    alert('Presença confirmada com sucesso! Muito obrigada.');
-                    closeModal();
-                    form.reset();
-                    submitBtn.textContent = "Confirmar"; 
-                    submitBtn.disabled = false;
-                })
-                .catch(error => {
-                    alert('Houve um erro ao enviar. Por favor, tente novamente ou confirme direto no WhatsApp.');
-                    console.error('Error!', error.message);
-                    submitBtn.textContent = "Confirmar";
-                    submitBtn.disabled = false;
-                });
+            fetch(scriptURL, { 
+                method: 'POST', 
+                body: data,
+                mode: 'no-cors' // Bypasses the strict browser redirect block
+            })
+            .then(() => {
+                // Because of 'no-cors', we can't read the response directly, so we assume success
+                alert('Presença confirmada com sucesso! Muito obrigada.');
+                closeModal();
+                form.reset();
+                submitBtn.textContent = "Confirmar"; 
+                submitBtn.disabled = false;
+            })
+            .catch(error => {
+                alert('Houve um erro de rede. Por favor, tente novamente ou confirme no WhatsApp.');
+                console.error('Error!', error.message);
+                submitBtn.textContent = "Confirmar";
+                submitBtn.disabled = false;
+            });
         });
     </script>
 </body>
