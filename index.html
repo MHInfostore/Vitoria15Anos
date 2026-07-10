@@ -236,12 +236,20 @@
 </head>
 <body>
 
+    <!-- Hidden iframe: Bypasses CORS entirely by handling the form submission natively -->
+    <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
+
     <!-- RSVP Modal -->
     <div class="modal-overlay" id="rsvpModal">
         <div class="modal-box">
             <h2 class="great-vibes" style="font-size: 2.5rem; color: #B43474;">Confirme sua Presença</h2>
-            <form id="rsvpForm">
-                <!-- Names match the e.parameter variables in Apps Script -->
+            
+            <!-- Standard form pointing directly to Google, targeting the hidden iframe -->
+            <form id="rsvpForm" 
+                  action="https://script.google.com/macros/s/AKfycby92TDGNBYjhiZQlKiSLRmaQJXpc3z_i_uef67VY2i6f0K_WW-7UeMeXbiAWpii8aeO/exec" 
+                  method="POST" 
+                  target="hidden_iframe">
+                  
                 <input type="text" id="guestName" name="nome" placeholder="Nome Completo" required class="yuyu-regular">
                 <input type="tel" id="guestPhone" name="telefone" placeholder="Telefone / WhatsApp" required class="yuyu-regular">
                 <div class="modal-buttons">
@@ -341,40 +349,29 @@
             }
         }
 
-        // 4. Google Sheets Form Submission
-        const scriptURL = 'https://script.google.com/macros/s/AKfycby92TDGNBYjhiZQlKiSLRmaQJXpc3z_i_uef67VY2i6f0K_WW-7UeMeXbiAWpii8aeO/exec'; 
-        
+        // 4. Secure Form Submission without JavaScript Fetch (Anti-CORS Bypass)
+        let submitted = false;
         const form = document.getElementById('rsvpForm');
+        const iframe = document.getElementById('hidden_iframe');
         const submitBtn = document.getElementById('submitBtn');
 
-        form.addEventListener('submit', e => {
-            e.preventDefault(); 
-            
+        // When the user clicks submit, mark as submitted and show loading text
+        form.addEventListener('submit', () => {
+            submitted = true;
             submitBtn.textContent = "Enviando...";
-            submitBtn.disabled = true; 
+            submitBtn.disabled = true;
+        });
 
-            // Wraps FormData in URLSearchParams to guarantee Apps Script parses it correctly
-            const data = new URLSearchParams(new FormData(form));
-
-            fetch(scriptURL, { 
-                method: 'POST', 
-                body: data,
-                mode: 'no-cors' // Bypasses the strict browser redirect block
-            })
-            .then(() => {
-                // Because of 'no-cors', we can't read the response directly, so we assume success
+        // This event listener fires when the hidden iframe finishes loading Google's response
+        iframe.addEventListener('load', () => {
+            if (submitted) {
                 alert('Presença confirmada com sucesso! Muito obrigada.');
                 closeModal();
                 form.reset();
                 submitBtn.textContent = "Confirmar"; 
                 submitBtn.disabled = false;
-            })
-            .catch(error => {
-                alert('Houve um erro de rede. Por favor, tente novamente ou confirme no WhatsApp.');
-                console.error('Error!', error.message);
-                submitBtn.textContent = "Confirmar";
-                submitBtn.disabled = false;
-            });
+                submitted = false; // Reset state
+            }
         });
     </script>
 </body>
